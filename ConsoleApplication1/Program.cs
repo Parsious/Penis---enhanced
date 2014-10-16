@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -77,68 +79,89 @@ namespace ConsoleApplication1
             }
             Console.WriteLine("intelfile is {0} ", interesting_logs[0]);
             bool system_found = false;
-            
-            //do
-            //{
-            //    Console.Write("what system are you ratting in ? ");
-            //    string ratting_system = Console.ReadLine();
-            //    string ratting_system_file = string.Empty;
-            //    FileInfo[] xml_file_info = new DirectoryInfo(XML_DATA_PATH).GetFiles();
-            //    foreach (var xml_file in xml_file_info)
-            //    {
-            //        if (ratting_system != null && xml_file.Name.Split('.')[0] == ratting_system.ToUpper())
-            //        {
 
-            //            ratting_system_file = xml_file.Name;
-            //            system_found = true;
-            //        }
-            //    }
-            //    if (system_found)
-            //    {
-            //        Console.WriteLine("\nyou are ratting in : {0} the xmal file for that is : {1} \n", ratting_system,
-            //            ratting_system_file);
+            do
+            {
+                Console.Write("what system are you ratting in ? ");
+                string ratting_system = Console.ReadLine();
+                string ratting_system_file = string.Empty;
+                FileInfo[] xml_file_info = new DirectoryInfo(XML_DATA_PATH).GetFiles();
+                foreach (var xml_file in xml_file_info)
+                {
+                    if (ratting_system != null && xml_file.Name.Split('.')[0] == ratting_system.ToUpper())
+                    {
 
-            //        open_xml(XML_DATA_PATH, ratting_system_file, data_1);
+                        ratting_system_file = xml_file.Name;
+                        system_found = true;
+                    }
+                }
+                if (system_found)
+                {
+                    Console.WriteLine("\nyou are ratting in : {0} the xmal file for that is : {1} \n", ratting_system,
+                        ratting_system_file);
 
-            //    }
-            //    else
-            //    {
-            //        Console.Clear();
-            //        Console.WriteLine("\ncould not find xml data for : \"{0}\" are you sure your in \"Branch\"", ratting_system);
-            //    } 
-            //} while (!system_found);
+                    open_xml(XML_DATA_PATH, ratting_system_file, data_1);
 
-             //now open the branch intel file 
-
-
-
-            bool eof_b = intel_file(interesting_logs);
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("\ncould not find xml data for : \"{0}\" are you sure your in \"Branch\"", ratting_system);
+                }
+            } while (!system_found);
 
             foreach (string s in data_1.systems)
             {
                 Console.Write(s + " | ");
             }
+             //now open the branch intel file 
+
+            bool eof_b = intel_file(interesting_logs, data_1);
+            
             Console.ReadKey();
         }
 
-        private static bool intel_file(List<FileInfo> interesting_logs)
+        private static bool intel_file(List<FileInfo> interesting_logs, Data_Object data)
         {
-            using (StreamReader intel_stream = new StreamReader(LOG_PATH + "\\" + interesting_logs[0]))
+            bool match = false;
+            using (var fs = new FileStream(LOG_PATH + "\\" + interesting_logs[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))   
+            using (StreamReader intel_stream = new StreamReader(fs))
             {
                 while (true)
                 {
-                   
+                    Thread.Sleep(500);
+                    string line = intel_stream.ReadLine();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        check_words(line, data); 
+                    }
                     if (intel_stream.Peek() == -1)
                     {
-                        Thread.Sleep(500);
+                        
                     }
-                    else
-                    {
-                         Console.WriteLine(intel_stream.ReadLine());
-                    }
+                    
                 }
             }
             return true;
+        }
+
+        private static void check_words(string line, Data_Object data)
+        {
+            bool hit = false;
+            Console.WriteLine("="+line);
+            foreach (var system in data.systems)
+            {
+                if (line.Contains(system.ToLower())&& !hit)
+                {
+                    hit = true;
+                    Console.WriteLine("===hit===");
+                    SystemSounds.Beep.Play();
+                    SystemSounds.Beep.Play();
+                    SystemSounds.Beep.Play();
+                    //return true;
+                }
+            }
+            //return false;
         }
 
         private static void open_xml(string XML_DATA_PATH, string ratting_system_file, Data_Object data)
