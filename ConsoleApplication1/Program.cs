@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -19,19 +21,12 @@ namespace ConsoleApplication1
 
         static void Main(string[] args)
         {
-            
-            // first things first ... get the file from the directory 
-            Console.WriteLine(LOG_PATH);
             var log_info = new DirectoryInfo(LOG_PATH);
             var logs = log_info.GetFiles();
-            XmlSerializer ser = new XmlSerializer(typeof(List<string>));
-
             List<string> systems = new List<string>();
-            
-            Console.WriteLine("==== log files ====");
-            Console.WriteLine("==== initial number of files ====");
-            Console.WriteLine("number of files is  : " + logs.Length);
             var interesting_logs = new List<FileInfo>();
+            const bool TEST = true;
+            Data_Object data_1 = new Data_Object();
 
             #region old test code
             //Console.WriteLine("\n==== BRN.CFC files ====\n");
@@ -61,54 +56,116 @@ namespace ConsoleApplication1
             //}
             #endregion
 
-            Console.WriteLine("\n==== branch intel file s in order (most recent first) ====\n");
+            string region = "";
+            if (!TEST)
+            {
+                region = "BRN.CFC";
+
+            }
+            else
+            {
+                region = "par chan";
+            }
+            //Console.WriteLine("\n==== branch intel file s in order (most recent first) ====\n");
             foreach (var log in (from log in logs orderby log.CreationTime descending select log).ToArray())
             {
 
-                if (log.Name.Contains("BRN.CFC"))
+                if (log.Name.Contains(region))
                 {
                     interesting_logs.Add(log);
                 }
             }
-
-            foreach (var interesting_file in interesting_logs)
-            {
-                Console.WriteLine("name : {0}  create date : {1}", interesting_file, interesting_file.CreationTime);
-            }
-            Console.WriteLine("\n==== branch intel to use for this  ====\n");
-            Console.WriteLine("name : {0}  create date : {1}", interesting_logs[0], interesting_logs[0].CreationTime);
-            Console.WriteLine("==== xml file in ====");
-
-            Console.WriteLine(XML_DATA_PATH);
-
-            DirectoryInfo xml_dir_info = new DirectoryInfo(XML_DATA_PATH);
-            FileInfo[] xml_file_info = xml_dir_info.GetFiles();
-
-            var data_fh = XML_DATA_PATH + "\\" + xml_file_info[3];
+            Console.WriteLine("intelfile is {0} ", interesting_logs[0]);
+            bool system_found = false;
             
-            Console.WriteLine(data_fh);
-            //var data_info = new DirectoryInfo(XML_DATA_PATH);
-            //get json string 
+            //do
+            //{
+            //    Console.Write("what system are you ratting in ? ");
+            //    string ratting_system = Console.ReadLine();
+            //    string ratting_system_file = string.Empty;
+            //    FileInfo[] xml_file_info = new DirectoryInfo(XML_DATA_PATH).GetFiles();
+            //    foreach (var xml_file in xml_file_info)
+            //    {
+            //        if (ratting_system != null && xml_file.Name.Split('.')[0] == ratting_system.ToUpper())
+            //        {
 
-            if (File.Exists(data_fh))
-            {
-                using (Stream s = File.OpenRead(data_fh))
-                {
-                    systems = (List<string>) ser.Deserialize(s);
-                    s.Close();
-                }
+            //            ratting_system_file = xml_file.Name;
+            //            system_found = true;
+            //        }
+            //    }
+            //    if (system_found)
+            //    {
+            //        Console.WriteLine("\nyou are ratting in : {0} the xmal file for that is : {1} \n", ratting_system,
+            //            ratting_system_file);
 
-            }
+            //        open_xml(XML_DATA_PATH, ratting_system_file, data_1);
+
+            //    }
+            //    else
+            //    {
+            //        Console.Clear();
+            //        Console.WriteLine("\ncould not find xml data for : \"{0}\" are you sure your in \"Branch\"", ratting_system);
+            //    } 
+            //} while (!system_found);
+
+             //now open the branch intel file 
 
 
 
-            foreach (string s in systems)
+            bool eof_b = intel_file(interesting_logs);
+
+            foreach (string s in data_1.systems)
             {
                 Console.Write(s + " | ");
             }
             Console.ReadKey();
         }
+
+        private static bool intel_file(List<FileInfo> interesting_logs)
+        {
+            using (StreamReader intel_stream = new StreamReader(LOG_PATH + "\\" + interesting_logs[0]))
+            {
+                while (true)
+                {
+                   
+                    if (intel_stream.Peek() == -1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                    else
+                    {
+                         Console.WriteLine(intel_stream.ReadLine());
+                    }
+                }
+            }
+            return true;
+        }
+
+        private static void open_xml(string XML_DATA_PATH, string ratting_system_file, Data_Object data)
+        {
+            XmlSerializer ser = new XmlSerializer(typeof(List<string>));
+            var data_fh = XML_DATA_PATH + "\\" + ratting_system_file;
+            Console.WriteLine(data_fh + "");
+            if (File.Exists(data_fh))
+            {
+                using (Stream s = File.OpenRead(data_fh))
+                {
+                    data.systems = (List<string>)ser.Deserialize(s);
+                    s.Close();
+                }
+                
+            }
+        }   
     }
 
-    
+    internal class Data_Object
+    {
+        public List<String> systems { get; set; }
+
+
+        //public void systems_add(List<string> to_add)
+        //{
+        //    systems = to_add;
+        //}
+    }
 }
