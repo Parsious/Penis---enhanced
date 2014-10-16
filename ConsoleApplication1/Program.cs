@@ -4,13 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using System.Xml.Serialization;
+
 
 namespace ConsoleApplication1
 {
     class Program
     {
         private const string LOG_PATH = @"C:\Users\radio\Documents\EVE\logs\Chatlogs" ;
+        private const string XML_DATA_PATH = @"C:\Users\radio\Desktop\systems\xml";
         private const string DATA_PATH = @"C:\Users\radio\Desktop\systems";
         private List<string> _systems =new List<string>() ;
 
@@ -22,7 +24,10 @@ namespace ConsoleApplication1
             Console.WriteLine(LOG_PATH);
             var log_info = new DirectoryInfo(LOG_PATH);
             var logs = log_info.GetFiles();
+            XmlSerializer ser = new XmlSerializer(typeof(List<string>));
 
+            List<string> systems = new List<string>();
+            
             Console.WriteLine("==== log files ====");
             Console.WriteLine("==== initial number of files ====");
             Console.WriteLine("number of files is  : " + logs.Length);
@@ -70,33 +75,36 @@ namespace ConsoleApplication1
             {
                 Console.WriteLine("name : {0}  create date : {1}", interesting_file, interesting_file.CreationTime);
             }
-            //FileInfo[] info = (from file in files orderby file.CreationTime select file ).ToArray();
-
-
             Console.WriteLine("\n==== branch intel to use for this  ====\n");
             Console.WriteLine("name : {0}  create date : {1}", interesting_logs[0], interesting_logs[0].CreationTime);
-            
-            Console.WriteLine("==== json files ====");
+            Console.WriteLine("==== xml file in ====");
 
-            Console.WriteLine(DATA_PATH);
-            var data_fh = DATA_PATH + "\\O94U-A.json";
-            List<string> systems_l = new List<string>();
-            var data_info = new DirectoryInfo(DATA_PATH);
+            Console.WriteLine(XML_DATA_PATH);
+
+            DirectoryInfo xml_dir_info = new DirectoryInfo(XML_DATA_PATH);
+            FileInfo[] xml_file_info = xml_dir_info.GetFiles();
+
+            var data_fh = XML_DATA_PATH + "\\" + xml_file_info[3];
+            
+            Console.WriteLine(data_fh);
+            //var data_info = new DirectoryInfo(XML_DATA_PATH);
             //get json string 
 
             if (File.Exists(data_fh))
             {
-                Console.WriteLine("we gave a file to read from ");
-                StreamReader my_file = new StreamReader(data_fh);
-                systems_l = my_file.ReadToEnd().Trim('[', ']').Trim('\"').Replace("\",\"", " ").Split(' ').ToList();
-                my_file.Close();
+                using (Stream s = File.OpenRead(data_fh))
+                {
+                    systems = (List<string>) ser.Deserialize(s);
+                    s.Close();
+                }
+
             }
 
-           
 
-            foreach (string s in systems_l)
+
+            foreach (string s in systems)
             {
-                Console.WriteLine(s);
+                Console.Write(s + " | ");
             }
             Console.ReadKey();
         }
