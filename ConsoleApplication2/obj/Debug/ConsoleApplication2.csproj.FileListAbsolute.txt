@@ -1,0 +1,5 @@
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\ConsoleApplication2\bin\Debug\ConsoleApplication2.exe.config
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\ConsoleApplication2\bin\Debug\ConsoleApplication2.exe
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\ConsoleApplication2\bin\Debug\ConsoleApplication2.pdb
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\ConsoleApplication2\obj\Debug\ConsoleApplication2.exe
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\ConsoleApplication2\obj\Debug\ConsoleApplication2.pdb

@@ -8,6 +8,12 @@ using System.Xml.Serialization;
 
 namespace ConsoleApplication2
 {
+
+    /// <summary>
+    /// 
+    ///  this takes a simple json list and convewrts it to a klist of strings ... not very hard but will make other thinsga s whole lot easier 
+    /// 
+    /// </summary>
     class Program
     {
 

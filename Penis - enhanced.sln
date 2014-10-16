@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "Cons
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonApplication1", "PythonApplication1\PythonApplication1.pyproj", "{C53633FF-C943-4D22-BA66-5652BC258C4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication2", "ConsoleApplication2\ConsoleApplication2.csproj", "{89C4B4A2-F3E2-4383-AC0C-1B18EADD5540}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "json to xml converter", "ConsoleApplication2\json to xml converter.csproj", "{89C4B4A2-F3E2-4383-AC0C-1B18EADD5540}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
