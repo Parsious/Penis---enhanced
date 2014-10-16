@@ -15,20 +15,30 @@ namespace ConsoleApplication1
 {
     class Program
     {
-        private const string LOG_PATH = @"C:\Users\radio\Documents\EVE\logs\Chatlogs" ;
-        private const string XML_DATA_PATH = @"C:\Users\radio\Desktop\systems\xml";
-        private const string DATA_PATH = @"C:\Users\radio\Desktop\systems";
-        private List<string> _systems =new List<string>() ;
+        private  static string _log_path = "" ;
+        private static string _xml_data_path ="";
+        private const string LOG = @"\Documents\EVE\logs\Chatlogs";
+        private const string DATA_PATH = @"\Desktop\systems\xml";
+        //private List<string> _systems =new List<string>() ;
 
 
         static void Main(string[] args)
         {
-            var log_info = new DirectoryInfo(LOG_PATH);
+            //string user = Environment.UserName;
+
+            _log_path = build_path(LOG, Environment.UserName);
+            _xml_data_path = build_path(DATA_PATH, Environment.UserName);
+            
+            var log_info = new DirectoryInfo(_log_path);
             var logs = log_info.GetFiles();
-            List<string> systems = new List<string>();
+            //List<string> systems = new List<string>();
             var interesting_logs = new List<FileInfo>();
             const bool TEST = true;
             Data_Object data_1 = new Data_Object();
+            
+            
+            
+           
 
             #region old test code
             //Console.WriteLine("\n==== BRN.CFC files ====\n");
@@ -71,21 +81,44 @@ namespace ConsoleApplication1
             //Console.WriteLine("\n==== branch intel file s in order (most recent first) ====\n");
             foreach (var log in (from log in logs orderby log.CreationTime descending select log).ToArray())
             {
-
                 if (log.Name.Contains(region))
                 {
                     interesting_logs.Add(log);
                 }
             }
             Console.WriteLine("intelfile is {0} ", interesting_logs[0]);
-            bool system_found = false;
 
+
+
+
+            get_location(data_1);
+
+            foreach (string s in data_1.systems)
+            {
+                Console.Write(s + " | ");
+            }
+             //now open the branch intel file 
+
+            bool eof_b = intel_file(interesting_logs, data_1);
+            
+            Console.ReadKey();
+        }
+
+        private static string build_path(string path, string user)
+        {
+            return @"C:\Users\" + user + path;
+        }
+
+        private static void get_location(Data_Object data_1)
+        {
+            bool system_found = false;
             do
             {
+                
                 Console.Write("what system are you ratting in ? ");
                 string ratting_system = Console.ReadLine();
                 string ratting_system_file = string.Empty;
-                FileInfo[] xml_file_info = new DirectoryInfo(XML_DATA_PATH).GetFiles();
+                FileInfo[] xml_file_info = new DirectoryInfo(_xml_data_path).GetFiles();
                 foreach (var xml_file in xml_file_info)
                 {
                     if (ratting_system != null && xml_file.Name.Split('.')[0] == ratting_system.ToUpper())
@@ -100,7 +133,7 @@ namespace ConsoleApplication1
                     Console.WriteLine("\nyou are ratting in : {0} the xmal file for that is : {1} \n", ratting_system,
                         ratting_system_file);
 
-                    open_xml(XML_DATA_PATH, ratting_system_file, data_1);
+                    open_xml(_xml_data_path, ratting_system_file, data_1);
 
                 }
                 else
@@ -109,22 +142,12 @@ namespace ConsoleApplication1
                     Console.WriteLine("\ncould not find xml data for : \"{0}\" are you sure your in \"Branch\"", ratting_system);
                 }
             } while (!system_found);
-
-            foreach (string s in data_1.systems)
-            {
-                Console.Write(s + " | ");
-            }
-             //now open the branch intel file 
-
-            bool eof_b = intel_file(interesting_logs, data_1);
-            
-            Console.ReadKey();
         }
 
         private static bool intel_file(List<FileInfo> interesting_logs, Data_Object data)
         {
             bool match = false;
-            using (var fs = new FileStream(LOG_PATH + "\\" + interesting_logs[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))   
+            using (var fs = new FileStream(_log_path + "\\" + interesting_logs[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))   
             using (StreamReader intel_stream = new StreamReader(fs))
             {
                 while (true)
