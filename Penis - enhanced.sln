@@ -9,6 +9,11 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonApplication1", "Pytho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "json to xml converter", "ConsoleApplication2\json to xml converter.csproj", "{89C4B4A2-F3E2-4383-AC0C-1B18EADD5540}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5C31F477-754F-441F-95BE-E5AC6B94FA07}"
+	ProjectSection(SolutionItems) = preProject
+		naming stuff.txt = naming stuff.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
