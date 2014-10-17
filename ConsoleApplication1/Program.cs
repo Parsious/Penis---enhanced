@@ -35,9 +35,8 @@ namespace ConsoleApplication1
             //List<string> systems = new List<string>();
             var interesting_logs = new List<FileInfo>();
 
-            const int TEST = 3;
+            const bool TEST = false;
             Data_Object data_1 = new Data_Object();
-            Data_Object data_2 = new Data_Object();
             
             
             
@@ -73,29 +72,22 @@ namespace ConsoleApplication1
             #endregion
 
             string region = "";
-            if (TEST == 1)
+            if (!TEST)
             {
                 region = "BRN.CFC";
-                get_location(data_1, null);
+                get_location(data_1);
                 get_logfile(interesting_logs, data_1, logs, "BRN.CFC");
-                bool eof_b = intel_file(interesting_logs, data_1, null);
+                bool eof_b = intel_file(interesting_logs, data_1);
 
             }
-            else if (TEST == 2)
+            else 
             {
                 region = "par chan";
-                get_location(data_1, null);
+                get_location(data_1);
                 get_logfile(interesting_logs, data_1, logs, "par chan");
-                bool eof_b = intel_file(interesting_logs, data_1, null);
+                bool eof_b = intel_file(interesting_logs, data_1);
             }
-            else
-            {
-                region = "both";
-                get_location(data_1, data_2);
-                get_logfile(interesting_logs, data_1, logs, "BRN.CFC");
-                get_logfile(interesting_logs, data_2, logs, "par chan");
-                bool eof_b = intel_file(interesting_logs, data_1, data_2);
-            }
+          
             //Console.WriteLine("\n==== branch intel file s in order (most recent first) ====\n");
             
 
@@ -125,6 +117,7 @@ namespace ConsoleApplication1
             {
                 Console.Write(s + " | ");
             }
+             Console.WriteLine();
         }
 
         private static string build_path(string path, string user)
@@ -132,14 +125,10 @@ namespace ConsoleApplication1
             return @"C:\Users\" + user + path;
         }
 
-        private static void get_location(Data_Object data_1 ,Data_Object data_2)
+        private static void get_location(Data_Object data_1 )
         {
             bool system_found = false;
-            bool multi = false;
-            if (data_2 != null)
-            {
-                multi = true;
-            }
+           
             do
             {
                 
@@ -162,10 +151,7 @@ namespace ConsoleApplication1
                         ratting_system_file);
 
                     open_xml(_xml_data_path, ratting_system_file, data_1);
-                    if (multi)
-                    {
-                        open_xml(_xml_data_path, ratting_system_file, data_2);
-                    }
+                   
 
                 }
                 else
@@ -176,14 +162,11 @@ namespace ConsoleApplication1
             } while (!system_found);
         }
 
-        private static bool intel_file(List<FileInfo> interesting_logs, Data_Object data, Data_Object data_2)
+        private static bool intel_file(List<FileInfo> interesting_logs, Data_Object data)
         {
             bool match = false;
-            bool multi = false;
-            if (data_2 != null)
-                {
-                    multi = true;
-                }
+           
+            
             using (var fs = new FileStream(_log_path + "\\" + interesting_logs[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))   
             using (StreamReader intel_stream = new StreamReader(fs))
                 
@@ -196,10 +179,7 @@ namespace ConsoleApplication1
                     {
                         
                         check_words(line, data, 1);
-                        if (multi)
-                        {
-                            check_words(line, data_2, 2); 
-                        }
+                       
                     }
                     if (intel_stream.Peek() == -1)
                     {
@@ -217,14 +197,16 @@ namespace ConsoleApplication1
             Console.WriteLine(number +" === " + line);
             foreach (var system in data.systems)
             {
-                if (line.Contains(system.ToLower())&& !hit)
+                if ((line.Contains(system.ToLower()) || line.ToUpper().Contains(system)) && !hit)
                 {
                     hit = true;
                     Console.WriteLine(number +" ===hit===");
-                    SystemSounds.Beep.Play();
-                    SystemSounds.Beep.Play();
-                    SystemSounds.Beep.Play();
-                    //return true;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        SystemSounds.Beep.Play();
+                        Thread.Sleep(50); 
+                    }
+                   
                 }
             }
             //return false;
