@@ -1,0 +1,18 @@
+﻿<Window x:Class="VAGINA.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="V.A.G.I.N.A." Height="913" Width="525">
+    <Grid>
+        <Label Content="intel source" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top"/>
+        <Label Content="Jew haven" HorizontalAlignment="Left" Margin="17,69,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="source_combo" HorizontalAlignment="Left" Margin="86,46,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="source_combo_SelectionChanged">
+            <ComboBoxItem Content="par chan" />
+            <ComboBoxItem Content="BRN.CFC" />
+        </ComboBox>
+        <ComboBox x:Name="system_combo" HorizontalAlignment="Left" Margin="86,73,0,0" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="output_text" Margin="10,100,10,10" TextWrapping="Wrap"  VerticalScrollBarVisibility="Auto"/>
+        <Button Content="Button" HorizontalAlignment="Right" Margin="0,46,10,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Button" HorizontalAlignment="Right" Margin="0,73,10,0" VerticalAlignment="Top" Width="75"/>
+
+    </Grid>
+</Window>
