@@ -35,7 +35,7 @@ namespace ConsoleApplication1
             //List<string> systems = new List<string>();
             var interesting_logs = new List<FileInfo>();
 
-            const bool TEST = false;
+            const bool TEST = true;
             Data_Object data_1 = new Data_Object();
             
             
@@ -197,7 +197,7 @@ namespace ConsoleApplication1
             Console.WriteLine(number +" === " + line);
             foreach (var system in data.systems)
             {
-                if ((line.Contains(system.ToLower()) || line.ToUpper().Contains(system)) && !hit)
+                if (line.ToLower().Contains(system.ToLower())  && !hit)
                 {
                     hit = true;
                     Console.WriteLine(number +" ===hit===");
