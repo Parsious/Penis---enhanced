@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -33,11 +34,14 @@ namespace ConsoleApplication1
             var logs = log_info.GetFiles();
             //List<string> systems = new List<string>();
             var interesting_logs = new List<FileInfo>();
-            const bool TEST = true;
+
+            const int TEST = 3;
             Data_Object data_1 = new Data_Object();
+            Data_Object data_2 = new Data_Object();
             
             
             
+            //get_location(data_1);
            
 
             #region old test code
@@ -69,16 +73,45 @@ namespace ConsoleApplication1
             #endregion
 
             string region = "";
-            if (!TEST)
+            if (TEST == 1)
             {
                 region = "BRN.CFC";
+                get_location(data_1, null);
+                get_logfile(interesting_logs, data_1, logs, "BRN.CFC");
+                bool eof_b = intel_file(interesting_logs, data_1, null);
 
+            }
+            else if (TEST == 2)
+            {
+                region = "par chan";
+                get_location(data_1, null);
+                get_logfile(interesting_logs, data_1, logs, "par chan");
+                bool eof_b = intel_file(interesting_logs, data_1, null);
             }
             else
             {
-                region = "par chan";
+                region = "both";
+                get_location(data_1, data_2);
+                get_logfile(interesting_logs, data_1, logs, "BRN.CFC");
+                get_logfile(interesting_logs, data_2, logs, "par chan");
+                bool eof_b = intel_file(interesting_logs, data_1, data_2);
             }
             //Console.WriteLine("\n==== branch intel file s in order (most recent first) ====\n");
+            
+
+
+            
+
+           
+             //now open the branch intel file 
+
+            
+            
+            Console.ReadKey();
+        }
+
+        private static void get_logfile(List<FileInfo> interesting_logs, Data_Object data_1, FileInfo[] logs, string region)
+        {
             foreach (var log in (from log in logs orderby log.CreationTime descending select log).ToArray())
             {
                 if (log.Name.Contains(region))
@@ -88,20 +121,10 @@ namespace ConsoleApplication1
             }
             Console.WriteLine("intelfile is {0} ", interesting_logs[0]);
 
-
-
-
-            get_location(data_1);
-
             foreach (string s in data_1.systems)
             {
                 Console.Write(s + " | ");
             }
-             //now open the branch intel file 
-
-            bool eof_b = intel_file(interesting_logs, data_1);
-            
-            Console.ReadKey();
         }
 
         private static string build_path(string path, string user)
@@ -109,9 +132,14 @@ namespace ConsoleApplication1
             return @"C:\Users\" + user + path;
         }
 
-        private static void get_location(Data_Object data_1)
+        private static void get_location(Data_Object data_1 ,Data_Object data_2)
         {
             bool system_found = false;
+            bool multi = false;
+            if (data_2 != null)
+            {
+                multi = true;
+            }
             do
             {
                 
@@ -134,6 +162,10 @@ namespace ConsoleApplication1
                         ratting_system_file);
 
                     open_xml(_xml_data_path, ratting_system_file, data_1);
+                    if (multi)
+                    {
+                        open_xml(_xml_data_path, ratting_system_file, data_2);
+                    }
 
                 }
                 else
@@ -144,11 +176,17 @@ namespace ConsoleApplication1
             } while (!system_found);
         }
 
-        private static bool intel_file(List<FileInfo> interesting_logs, Data_Object data)
+        private static bool intel_file(List<FileInfo> interesting_logs, Data_Object data, Data_Object data_2)
         {
             bool match = false;
+            bool multi = false;
+            if (data_2 != null)
+                {
+                    multi = true;
+                }
             using (var fs = new FileStream(_log_path + "\\" + interesting_logs[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))   
             using (StreamReader intel_stream = new StreamReader(fs))
+                
             {
                 while (true)
                 {
@@ -156,7 +194,12 @@ namespace ConsoleApplication1
                     string line = intel_stream.ReadLine();
                     if (!string.IsNullOrEmpty(line))
                     {
-                        check_words(line, data); 
+                        
+                        check_words(line, data, 1);
+                        if (multi)
+                        {
+                            check_words(line, data_2, 2); 
+                        }
                     }
                     if (intel_stream.Peek() == -1)
                     {
@@ -168,16 +211,16 @@ namespace ConsoleApplication1
             return true;
         }
 
-        private static void check_words(string line, Data_Object data)
+        private static void check_words(string line, Data_Object data, int number)
         {
             bool hit = false;
-            Console.WriteLine("="+line);
+            Console.WriteLine(number +" === " + line);
             foreach (var system in data.systems)
             {
                 if (line.Contains(system.ToLower())&& !hit)
                 {
                     hit = true;
-                    Console.WriteLine("===hit===");
+                    Console.WriteLine(number +" ===hit===");
                     SystemSounds.Beep.Play();
                     SystemSounds.Beep.Play();
                     SystemSounds.Beep.Play();
