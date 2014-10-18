@@ -1,0 +1,13 @@
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\bin\Debug\VAGINA.exe.config
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\bin\Debug\VAGINA.exe
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\bin\Debug\VAGINA.pdb
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\VAGINA.csprojResolveAssemblyReference.cache
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\MainWindow.baml
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\MainWindow.g.cs
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\App.g.cs
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\VAGINA_MarkupCompile.cache
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\VAGINA.g.resources
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\VAGINA.Properties.Resources.resources
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\VAGINA.csproj.GenerateResource.Cache
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\VAGINA.exe
+C:\Users\radio\Documents\Visual Studio 2013\Projects\Penis - enhanced\VAGINA\obj\Debug\VAGINA.pdb
